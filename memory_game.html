@@ -131,7 +131,24 @@
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
 
-<script>
+<script src="config.js"></script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.5.0/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: window.env.FIREBASE_API_KEY,
+        authDomain: "baibalaa-comments.firebaseapp.com",
+        databaseURL: "https://baibalaa-comments-default-rtdb.firebaseio.com", 
+        projectId: "baibalaa-comments",
+        storageBucket: "baibalaa-comments.appspot.com",
+        messagingSenderId: "1033627188071",
+        appId: "1:1033627188071:web:8e2f7ed4d5ae95b066cdc2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
   const totalPairs = 16;
   let score = 0;
   let time = 45;
@@ -267,39 +284,71 @@
     document.getElementById("nameModal").style.display = "none";
   }
 
-  function updateLeaderboard() {
-    const playerName = document.getElementById("playerName").textContent;
-    const leaderboard = Array.from(document.querySelectorAll(".leaderboard tbody tr")).map(row => ({
-      name: row.cells[1].textContent,
-      score: parseInt(row.cells[2].textContent),
-    }));
+  // Update leaderboard in Firebase
+async function updateLeaderboard() {
+  const playerName = document.getElementById("playerName").textContent;
+  const leaderboard = Array.from(document.querySelectorAll(".leaderboard tbody tr")).map(row => ({
+    name: row.cells[1].textContent,
+    score: parseInt(row.cells[2].textContent),
+  }));
 
-    if (playerName) {
-      leaderboard.push({ name: playerName, score });
-    }
-
-    leaderboard.sort((a, b) => {
-      if (b.score === a.score) {
-        return a.name === playerName ? -1 : 1;
-      }
-      return b.score - a.score;
-    });
-
-    const top5 = leaderboard.slice(0, 5);
-
-    const tbody = document.querySelector(".leaderboard tbody");
-    tbody.innerHTML = "";
-
-    top5.forEach((entry, index) => {
-      const row = document.createElement("tr");
-      row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${entry.name}</td>
-        <td>${entry.score}</td>
-      `;
-      tbody.appendChild(row);
-    });
+  if (playerName) {
+    leaderboard.push({ name: playerName, score });
   }
+
+  leaderboard.sort((a, b) => {
+    if (b.score === a.score) {
+      return a.name === playerName ? -1 : 1;
+    }
+    return b.score - a.score;
+  });
+
+  const top5 = leaderboard.slice(0, 5);
+
+  const dbRef = ref(db, "leaderboard"); // ✅ Corrected
+  await set(dbRef, top5);
+
+  const tbody = document.querySelector(".leaderboard tbody");
+  tbody.innerHTML = "";
+
+  top5.forEach((entry, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${entry.name}</td>
+      <td>${entry.score}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Load leaderboard from Firebase
+async function loadLeaderboard() {
+  try {
+    const dbRef = ref(db, "leaderboard"); // ✅ Corrected
+    onValue(dbRef, (snapshot) => {
+      const tbody = document.querySelector(".leaderboard tbody");
+      tbody.innerHTML = "";
+
+      if (snapshot.exists()) {
+        const leaderboard = snapshot.val();
+
+        leaderboard.forEach((entry, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${entry.name}</td>
+            <td>${entry.score}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Error loading leaderboard:", error);
+  }
+}
+
 
   function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
@@ -313,6 +362,9 @@
     });
 
     document.getElementById("startBtn").addEventListener("click", startGame);
+    document.getElementById("confirmBtn").addEventListener("click", confirmName);
+    document.getElementById("cancelBtn").addEventListener("click", cancelStart);
+
     buildInitialBoard(); // Build board immediately
   });
 </script>
@@ -324,8 +376,9 @@
     <h2>Enter Player Name</h2>
     <input type="text" id="playerNameInput" maxlength="12" placeholder="Max 12 characters">
     <div style="margin-top: 15px;">
-      <button onclick="confirmName()">Start Game</button>
-      <button onclick="cancelStart()" style="margin-left: 10px; background-color: #888; color: white;">Cancel</button>
+      <button id="confirmBtn">Start Game</button>
+      <button id="cancelBtn" style="margin-left: 10px; background-color: #888; color: white;">Cancel</button>
+
     </div>
   </div>
 </div>
