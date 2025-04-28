@@ -366,6 +366,7 @@ async function loadLeaderboard() {
     document.getElementById("cancelBtn").addEventListener("click", cancelStart);
 
     buildInitialBoard(); // Build board immediately
+    loadLeaderboard();    // ✅ Load leaderboard from Firebase when page loads
   });
 </script>
 
