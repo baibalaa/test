@@ -127,6 +127,18 @@
       </div>
     </footer>
 
+    <!-- Banner Ad (Fixed Bottom) -->
+<div class="fixed-banner-ad" id="bannerAd">
+  <div class="banner-slide active">
+    <img src="ad1.jpg" alt="Ad 1" />
+  </div>
+  <div class="banner-slide">
+    <img src="ad1.png" alt="Ad 2" />
+  </div>
+  <!-- Add more image slides if needed -->
+</div>
+
+
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
     </script>
@@ -330,6 +342,19 @@
   </div>
 </div>
 
-    
+<script>
+  const slides = document.querySelectorAll('#bannerAd .banner-slide');
+  let current = 0;
+
+  if (slides.length > 1) {
+    setInterval(() => {
+      slides[current].classList.remove('active');
+      current = (current + 1) % slides.length;
+      slides[current].classList.add('active');
+    }, 5000); // Change every 5 seconds
+  }
+</script>
+
+
   </body>
 </html>

@@ -680,3 +680,35 @@ ul.justified li {
     cursor: pointer;
   }
   
+  .fixed-banner-ad {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    z-index: 9999;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    height: auto;
+    max-height: 100px;
+  }
+  
+  .fixed-banner-ad .banner-slide {
+    display: none;
+    width: 100%;
+    text-align: center;
+  }
+  
+  .fixed-banner-ad .banner-slide.active {
+    display: block;
+  }
+  
+  .fixed-banner-ad img {
+    width: 100%;
+    height: auto;
+    max-height: 100px;
+    object-fit: cover;
+  }
+  
+  
