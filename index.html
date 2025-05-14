@@ -127,18 +127,18 @@
       </div>
     </footer>
 
-<!-- Banner Ad (Fixed Bottom) -->
-<div class="fixed-banner-ad" id="bannerAd">
-  <div class="banner-slide active">
-    <img src="banner1.jpg" alt="Ad 1" />
-  </div>
-  <div class="banner-slide">
-    <img src="banner2.jpg" alt="Ad 2" />
-  </div>
-  <div class="banner-slide">
-    <img src="banner3.jpg" alt="Ad 3" />
-  </div>
-</div>
+    <div class="fixed-banner-ad" id="bannerAd">
+      <div class="banner-slide active">
+        <video src="banner1.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="banner-slide">
+        <video src="banner1.mp4" autoplay muted loop playsinline></video>
+      </div>
+      <div class="banner-slide">
+        <video src="banner1.mp4" autoplay muted loop playsinline></video>
+      </div>
+    </div>
+    
 
 
 
@@ -354,9 +354,10 @@
       slides[current].classList.remove('active');
       current = (current + 1) % slides.length;
       slides[current].classList.add('active');
-    }, 5000); // Change every 5 seconds
+    }, 10000);
   }
 </script>
+
 
 
 
