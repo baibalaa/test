@@ -315,34 +315,50 @@ function endGame() {
     timestamp: Date.now()
   };
 
-  // Step 1: Read existing leaderboard
   onValue(leaderboardRef, (snapshot) => {
     const data = snapshot.val() || {};
     const entries = Object.entries(data).map(([key, value]) => ({ key, ...value }));
 
-    // Step 2: Sort by score, then timestamp
+    // Include new entry in the list
+    entries.push({ key: null, ...newEntry });
+
+    // Sort: higher score first, if same score then newer first
     entries.sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return b.timestamp - a.timestamp;
     });
 
-    // Step 3: Check if new score qualifies
-    const lowest = entries[entries.length - 1];
-    if (entries.length < 5 || score > lowest.score) {
-      if (entries.length >= 5) {
-        // Delete the lowest
-        const lowestRef = ref(db, `leaderboard-game/${lowest.key}`);
-        set(lowestRef, newEntry); // overwrite the lowest
-      } else {
-        // Less than 5 entries: just push
-        push(leaderboardRef, newEntry);
-      }
-    }
+    // Keep only top 5
+    const top5 = entries.slice(0, 5);
 
-    // Update leaderboard view after save
-    setTimeout(loadLeaderboard, 500);
+    // Clear and write only top 5
+    const updates = {};
+    top5.forEach(entry => {
+      // If it has a Firebase key, keep it
+      if (entry.key) {
+        updates[entry.key] = {
+          name: entry.name,
+          score: entry.score,
+          timestamp: entry.timestamp
+        };
+      } else {
+        // If it's the new entry (no key), Firebase will generate one
+        const newKey = push(leaderboardRef).key;
+        updates[newKey] = {
+          name: entry.name,
+          score: entry.score,
+          timestamp: entry.timestamp
+        };
+      }
+    });
+
+    // Replace leaderboard with top 5
+    set(leaderboardRef, updates).then(() => {
+      setTimeout(loadLeaderboard, 500);
+    });
   }, { onlyOnce: true });
 }
+
 
 
   function restart() {
