@@ -4,6 +4,7 @@ body {
     background-color: #121212;
     color: white;
     text-align: center;
+    padding-bottom: 200px; /* same as banner height */
 }
 
 nav {
@@ -680,16 +681,19 @@ ul.justified li {
     cursor: pointer;
   }
   
-  .fixed-banner-ad {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #000;
-    z-index: 9999;
-    overflow: hidden;
-    padding: 0;
-  }
+
+  /* ✅ Updated Fixed Banner Styles */
+.fixed-banner-ad {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #000;
+  z-index: 9999;
+  overflow: hidden;
+  padding: 0 10px; /* adds spacing left/right */
+  box-sizing: border-box;
+}
   
   .fixed-banner-ad .banner-slide {
     width: 100%;
@@ -716,5 +720,85 @@ ul.justified li {
     .fixed-banner-ad video {
       max-height: 100px;
     }
+  }
+  
+  .tournament-links {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  }
+  
+  .tournament-item h2 {
+    font-size: 1.6em;
+    margin: 0;
+  }
+  
+  .tournament-item a {
+    color: gold;
+    text-decoration: none;
+    transition: color 0.3s;
+    display: inline-block;
+    width: 100%;
+  }
+  
+  .tournament-item a:hover {
+    color: #ffcc00;
+  }
+  
+  .divider {
+    border-bottom: 1px solid rgba(255, 215, 0, 0.5);
+    margin: 20px 0;
+    width: 100%;
+  }
+  
+  /* Responsive tweaks for smaller screens */
+  @media (max-width: 600px) {
+    .tournament-item h2 {
+      font-size: 1.2em;
+    }
+  
+    .divider {
+      margin: 15px 0;
+      border-bottom: 1px solid rgba(255, 215, 0, 0.8); /* make it clearer */
+    }
+  }
+  
+
+  .hall-of-fame {
+    background-color: #111;
+    padding: 50px 20px;
+    text-align: center;
+  }
+  
+  .hof-heading {
+    color: gold;
+    font-size: 3rem;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px rgba(255, 215, 0, 0.3);
+  }
+  
+  .hof-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .hof-gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    border: 2px solid gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hof-gallery img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
   }
   
